@@ -1,0 +1,29 @@
+# API
+flask==3.1.0
+flask-cors==5.0.1
+PyJWT==2.10.1
+
+# Base de datos
+sqlalchemy==2.0.43
+pymysql==1.1.1
+bcrypt==4.3.0
+
+# Configuración
+python-dotenv==1.1.1
+pydantic==2.13.4
+
+# RAG / IA
+langchain==0.3.27
+langchain-community==0.3.27
+langchain-ollama==0.3.6
+chromadb==1.0.20
+
+# PDF
+pymupdf==1.26.4
+reportlab==4.4.3
+
+# Nube de palabras (versiones con wheels para Python 3.14+)
+wordcloud==1.9.6
+matplotlib==3.11.1
+pillow==12.3.0
+numpy==2.5.1
