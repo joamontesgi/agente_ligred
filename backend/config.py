@@ -22,7 +22,12 @@ def _build_mysql_url():
 class Config:
     JWT_SECRET = os.getenv("JWT_SECRET", "dev-secret-change-me")
     JWT_EXPIRY_HOURS = int(os.getenv("JWT_EXPIRY_HOURS", "24"))
-    CORS_ORIGINS = os.getenv("CORS_ORIGINS", "http://localhost:5173").split(",")
+    _cors_raw = os.getenv("CORS_ORIGINS", "*").strip()
+    CORS_ORIGINS = (
+        "*"
+        if _cors_raw == "*"
+        else [o.strip() for o in _cors_raw.split(",") if o.strip()]
+    )
     DATA_DIR = ROOT_DIR / "data"
     CHROMA_DIR = ROOT_DIR / "chroma"
     DOCUMENTOS_DIR = ROOT_DIR / "documentos"

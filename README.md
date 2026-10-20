@@ -115,7 +115,7 @@ python setup_mysql.py
 python app.py
 ```
 
-Servidor en `http://localhost:5000`. Health check: `GET http://localhost:5000/api/health`.
+API en **todas las interfaces** (`0.0.0.0:5000`): en esta máquina `http://localhost:5000`; en la red `http://<IP-LAN>:5000`. Health check: `GET /api/health`.
 
 **Variables en `backend/.env`:**
 
@@ -123,7 +123,7 @@ Servidor en `http://localhost:5000`. Health check: `GET http://localhost:5000/ap
 |----------|---------|-------------|
 | `JWT_SECRET` | `mi-clave-segura` | Clave para firmar tokens (cámbiala en producción) |
 | `JWT_EXPIRY_HOURS` | `24` | Expiración del token |
-| `CORS_ORIGINS` | `http://localhost:5173` | URLs del frontend (separadas por coma) |
+| `CORS_ORIGINS` | `*` | Orígenes del frontend (`*` en LAN; URLs concretas en producción pública) |
 | `MYSQL_HOST` | `127.0.0.1` | Host MySQL |
 | `MYSQL_PORT` | `3306` | Puerto MySQL |
 | `MYSQL_USER` | `root` | Usuario MySQL |
@@ -151,11 +151,11 @@ cd frontend
 
 npm install
 
-# Desarrollo (proxy /api → localhost:5000)
+# Desarrollo (proxy /api → backend en 127.0.0.1:5000)
 npm run dev
 ```
 
-Interfaz en `http://localhost:5173`.
+Vite escucha en la red (`host: true`). En consola verás **Local** y **Network** (p. ej. `http://192.168.x.x:5173`). Otros equipos en la misma red pueden abrir esa URL; no hace falta `VITE_API_URL` (el proxy `/api` va al backend en el servidor).
 
 **Producción (frontend):**
 
@@ -179,12 +179,14 @@ En producción, configura también `CORS_ORIGINS` en el backend con la URL exact
 
 ### 5. Resumen de puertos
 
-| Servicio | Puerto | URL |
-|----------|--------|-----|
-| Frontend (dev) | 5173 | http://localhost:5173 |
-| Backend API | 5000 | http://localhost:5000 |
-| Ollama | 11434 | http://127.0.0.1:11434 |
-| MySQL | 3306 | 127.0.0.1:3306 |
+| Servicio | Puerto | URL (servidor) |
+|----------|--------|----------------|
+| Frontend (dev) | 5173 | `http://<IP-LAN>:5173` (Vite muestra la IP al arrancar) |
+| Backend API | 5000 | `http://<IP-LAN>:5000` |
+| Ollama | 11434 | Solo en el servidor (`127.0.0.1:11434`) |
+| MySQL | 3306 | Solo en el servidor (`127.0.0.1:3306`) |
+
+> **Firewall:** en Windows, permite entrar en los puertos **5173** y **5000** si otros PCs no conectan.
 
 ---
 
@@ -211,7 +213,7 @@ cd frontend
 npm run dev
 ```
 
-En desarrollo, Vite redirige las peticiones `/api` al backend automáticamente.
+En desarrollo, Vite redirige las peticiones `/api` al backend en la misma máquina. Desde tablets u otros PCs usa la URL **Network** que imprime `npm run dev`.
 
 ## Uso
 
@@ -408,7 +410,7 @@ Configúralas en el entorno del backend (opcional en desarrollo):
 |----------|---------|-------------|
 | `JWT_SECRET` | `dev-secret-change-me` | Clave para firmar tokens JWT |
 | `JWT_EXPIRY_HOURS` | `24` | Horas de validez del token |
-| `CORS_ORIGINS` | `http://localhost:5173` | Orígenes permitidos (separados por coma) |
+| `CORS_ORIGINS` | `*` | Orígenes permitidos (`*` o lista separada por comas) |
 | `MYSQL_HOST` | `127.0.0.1` | Host MySQL (usa `127.0.0.1` en Windows si `localhost` falla) |
 | `MYSQL_PORT` | `3306` | Puerto MySQL |
 | `MYSQL_USER` | `profesor_ia` | Usuario MySQL |

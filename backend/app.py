@@ -17,7 +17,11 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    CORS(app, origins=app.config["CORS_ORIGINS"], supports_credentials=True)
+    cors_origins = app.config["CORS_ORIGINS"]
+    if cors_origins == "*":
+        CORS(app, resources={r"/api/*": {"origins": "*"}})
+    else:
+        CORS(app, origins=cors_origins, supports_credentials=True)
 
     init_db()
 
@@ -51,4 +55,4 @@ app = create_app()
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    app.run(debug=True, host="0.0.0.0", port=5000)
